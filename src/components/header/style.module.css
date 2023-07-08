@@ -1,0 +1,19 @@
+.header {
+  height: 70px;
+  padding: 0 50px;
+  background: #2a2a2a;
+  display: flex;
+}
+
+.routesWrapper {
+  margin: auto;
+}
+
+.link {
+  font-size: 26px;
+  transition: 0.3s;
+}
+
+.link:hover {
+  color: #eaa5a5;
+}

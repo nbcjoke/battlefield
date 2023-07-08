@@ -1,10 +1,15 @@
 import { Link } from "react-router-dom";
 
+import styles from "./style.module.css";
+
 export const Header = () => {
   return (
-    <div>
-      <h1>Header</h1>
-      <Link to="/home">Home</Link>
+    <div className={styles.header}>
+      <div className={styles.routesWrapper}>
+        <Link className={styles.link} to="/home">
+          Home
+        </Link>
+      </div>
     </div>
   );
 };
