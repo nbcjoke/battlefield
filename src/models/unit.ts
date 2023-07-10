@@ -1,5 +1,4 @@
 import { uniqueId } from "lodash";
-import { Unit as UnitType } from "../types/unit";
 
 export class Unit {
   public id: string;
