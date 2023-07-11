@@ -7,7 +7,7 @@
 }
 
 .teamsContainer {
-  margin-top: 30px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -29,9 +29,22 @@
 }
 
 .separator:not(:empty)::before {
-  margin-right: 0.25em;
+  margin-right: 0.3em;
 }
 
 .separator:not(:empty)::after {
-  margin-left: 0.25em;
+  margin-left: 0.3em;
+}
+
+.infoContainer {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.teamColor {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  text-align: center;
+  border-radius: 1px;
 }

@@ -1,5 +1,5 @@
 .header {
-  height: 70px;
+  height: 45px;
   padding: 0 50px;
   background: #2a2a2a;
   display: flex;
@@ -10,7 +10,7 @@
 }
 
 .link {
-  font-size: 26px;
+  font-size: 24px;
   transition: 0.3s;
 }
 

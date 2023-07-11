@@ -1,5 +1,10 @@
-import { Unit } from "./unit";
+import { Unit, ActionTypes } from "./unit";
 
-export class Paralyzer extends Unit {
+export abstract class Paralyzer extends Unit {
   type = "paralyzer";
+
+  public actions = [
+    { label: "Paralyze", action: ActionTypes.attack },
+    { label: "Defend", action: ActionTypes.defened },
+  ];
 }

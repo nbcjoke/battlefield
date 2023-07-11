@@ -1,6 +1,11 @@
-import { Unit } from "./unit";
+import { ActionTypes, Unit } from "./unit";
 
-export class Healer extends Unit {
+export abstract class Healer extends Unit {
   type = "healer";
   public heal!: number;
+
+  public actions = [
+    { label: "Heal", action: ActionTypes.heal },
+    { label: "Defend", action: ActionTypes.defened },
+  ];
 }

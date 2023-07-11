@@ -1,6 +1,29 @@
-import { Unit } from "./unit";
+import { Unit, ActionTypes, Action } from "./unit";
 
-export class Range extends Unit {
+export abstract class Range extends Unit {
   type = "range";
   public damage!: number;
+
+  public actions = [
+    { label: "Attack", action: ActionTypes.attack, isTargetRequired: true },
+    { label: "Defend", action: ActionTypes.defened },
+  ];
+
+  public performAction(action: Action, units: Unit[], target?: Unit): void {
+    switch (action.action) {
+      case ActionTypes.attack:
+        if (!target) {
+          return;
+        }
+        this.attack(target);
+        break;
+      case ActionTypes.defened:
+        this.defend();
+        break;
+    }
+  }
+
+  public attack(target: Unit): void {
+    target.takeDamage(this.damage);
+  }
 }
