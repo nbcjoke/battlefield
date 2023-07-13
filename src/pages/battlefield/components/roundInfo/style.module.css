@@ -27,19 +27,10 @@
   border: 1px solid white;
 }
 
-.redTeamTurn,
-.blueTeamTurn {
+.teamTurn {
   margin-left: 10px;
   white-space: nowrap;
   font-size: 20px;
-}
-
-.redTeamTurn {
-  color: red;
-}
-
-.blueTeamTurn {
-  color: blue;
 }
 
 .buttonsContainer {

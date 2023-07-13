@@ -1,7 +1,7 @@
 import { uniqueId } from "lodash";
 
 export enum ActionTypes {
-  defened = "defend",
+  defend = "defend",
   attack = "attack",
   heal = "heal",
   paralyze = "paralyze",
@@ -19,6 +19,7 @@ export interface Action {
   isTargetRequired?: boolean;
 }
 
+export type Team = "red" | "blue";
 export abstract class Unit {
   private _health!: number;
 
@@ -44,7 +45,8 @@ export abstract class Unit {
   public abstract actions: Action[];
   public status: Status = Status.alive;
   public isDefending = false;
-  constructor() {
+
+  constructor(public team: string) {
     this.id = uniqueId();
   }
 
@@ -61,8 +63,20 @@ export abstract class Unit {
     this._currentHealth -= damage;
 
     if (this._currentHealth <= 0) {
+      this._currentHealth = 0;
       this.status = Status.dead;
     }
+  }
+
+  public takeHeal(heal: number): void {
+    if (this._currentHealth <= 0 || this._currentHealth >= this._health) {
+      return;
+    }
+    this._currentHealth += heal;
+  }
+
+  public paralyzeUnit(): void {
+    this.status = Status.paralyzed;
   }
 
   public defend() {

@@ -6,7 +6,7 @@ export abstract class Range extends Unit {
 
   public actions = [
     { label: "Attack", action: ActionTypes.attack, isTargetRequired: true },
-    { label: "Defend", action: ActionTypes.defened },
+    { label: "Defend", action: ActionTypes.defend },
   ];
 
   public performAction(action: Action, units: Unit[], target?: Unit): void {
@@ -17,7 +17,7 @@ export abstract class Range extends Unit {
         }
         this.attack(target);
         break;
-      case ActionTypes.defened:
+      case ActionTypes.defend:
         this.defend();
         break;
     }

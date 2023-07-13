@@ -8,12 +8,14 @@ import styles from "./style.module.css";
 interface UnitRowProps {
   units: Unit[];
   isHovering: string;
+  currentId: string;
   selectTarget: (target: Unit) => void;
 }
 
 export const UnitRow: FunctionComponent<UnitRowProps> = ({
   units,
   isHovering,
+  currentId,
   selectTarget,
 }) => {
   return (
@@ -25,6 +27,7 @@ export const UnitRow: FunctionComponent<UnitRowProps> = ({
             unit={unit}
             isHovering={isHovering}
             selectTarget={selectTarget}
+            currentId={currentId}
           />
         );
       })}

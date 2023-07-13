@@ -3,8 +3,8 @@ import { Range } from "../range";
 import bandit from "../../assets/images/bandit.jpg";
 
 export class Bandit extends Range {
-  constructor() {
-    super();
+  constructor(team: string) {
+    super(team);
     this.name = "Bandit";
     this.health = 75;
     this.initiative = 60;

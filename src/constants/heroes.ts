@@ -9,13 +9,13 @@ import { Bishop } from "../models/units/bishop";
 import { Sirena } from "../models/units/sirena";
 
 export const heroes = [
-  Sceleton,
-  Centaur,
+  //   Sceleton,
+  //   Centaur,
   //   Bandit,
   //   ElfArcher,
-  //   SceletonMage,
+  SceletonMage,
   //   ArchiMage,
   //   Monk,
-  //   Bishop,
+  Bishop,
   //   Sirena,
 ];

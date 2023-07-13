@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect } from "react";
 
 import { Action, ActionTypes, Unit } from "../../../../models/unit";
 
@@ -50,15 +50,21 @@ export const RoundInfo: FunctionComponent<RoundInfoProps> = ({
           })}
         </div>
       </div>
-      {currentTeam === "red" ? (
-        <div className={styles.redTeamTurn}>Red team turn</div>
-      ) : (
-        <div className={styles.blueTeamTurn}>Blue team turn</div>
-      )}
+      <div
+        className={styles.teamTurn}
+        style={
+          units[currentIndex]?.team === "red"
+            ? { color: "red" }
+            : { color: "blue" }
+        }
+      >
+        {units[currentIndex]?.team} team turn
+      </div>
       <div className={styles.buttonsContainer}>
         {units[currentIndex]?.actions?.map((action) => {
           return (
             <button
+              key={action.label}
               className={styles.actionButton}
               onClick={() => onAction(action)}
               disabled={!!currentAction}

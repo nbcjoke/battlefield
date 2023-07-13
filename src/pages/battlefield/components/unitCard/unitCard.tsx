@@ -7,12 +7,14 @@ import styles from "./style.module.css";
 interface UnitCardProps {
   unit: Unit;
   isHovering: string;
+  currentId: string;
   selectTarget: (target: Unit) => void;
 }
 
 export const UnitCard: FunctionComponent<UnitCardProps> = ({
   unit,
   isHovering,
+  currentId,
   selectTarget,
 }) => {
   const onCardClick = () => {
@@ -21,14 +23,15 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
     //   return;
     // }
   };
-
   return (
     <div
       className={styles.unitCardContainer}
       key={unit.id}
       style={
-        isHovering === unit.id
+        isHovering === unit.id || currentId === unit.id
           ? { boxShadow: "0px 5px 19px 6px rgba(171, 174, 176, 0.29)" }
+          : unit.status === "dead"
+          ? { pointerEvents: "none" }
           : {}
       }
       onClick={onCardClick}
@@ -40,6 +43,14 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
       <p className={styles.unitHealth}>
         {unit.currentHealth}/{unit.health}
       </p>
+      <div
+        className={styles.deadUnit}
+        style={
+          unit.status === "dead" ? { display: "flex" } : { display: "none" }
+        }
+      >
+        DEAD
+      </div>
     </div>
   );
 };

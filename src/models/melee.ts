@@ -6,10 +6,11 @@ export abstract class Melee extends Unit {
 
   public actions = [
     { label: "Attack", action: ActionTypes.attack, isTargetRequired: true },
-    { label: "Defend", action: ActionTypes.defened },
+    { label: "Defend", action: ActionTypes.defend },
   ];
 
   public performAction(action: Action, units: Unit[], target?: Unit): void {
+    console.log(target);
     switch (action.action) {
       case ActionTypes.attack:
         if (!target) {
@@ -17,7 +18,7 @@ export abstract class Melee extends Unit {
         }
         this.attack(target);
         break;
-      case ActionTypes.defened:
+      case ActionTypes.defend:
         this.defend();
         break;
     }
