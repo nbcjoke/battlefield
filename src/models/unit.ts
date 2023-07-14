@@ -18,8 +18,6 @@ export interface Action {
   action: ActionTypes;
   isTargetRequired?: boolean;
 }
-
-export type Team = "red" | "blue";
 export abstract class Unit {
   private _health!: number;
 
@@ -45,9 +43,12 @@ export abstract class Unit {
   public abstract actions: Action[];
   public status: Status = Status.alive;
   public isDefending = false;
+  public type!: string;
+  public position!: { row: number; column: number };
 
-  constructor(public team: string) {
+  constructor(public team: string, row: number, column: number) {
     this.id = uniqueId();
+    this.position = { row, column };
   }
 
   public abstract performAction(
@@ -69,10 +70,13 @@ export abstract class Unit {
   }
 
   public takeHeal(heal: number): void {
-    if (this._currentHealth <= 0 || this._currentHealth >= this._health) {
+    if (this._currentHealth <= 0) {
       return;
     }
     this._currentHealth += heal;
+    if (this._currentHealth > this._health) {
+      this._currentHealth = this._health;
+    }
   }
 
   public paralyzeUnit(): void {
@@ -91,4 +95,6 @@ export abstract class Unit {
     this.status = Status.alive;
     this.isDefending = false;
   }
+
+  public abstract getAvailableTargets(units: Unit[]): string[];
 }

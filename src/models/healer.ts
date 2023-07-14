@@ -1,7 +1,7 @@
 import { Action, ActionTypes, Unit } from "./unit";
 
 export abstract class Healer extends Unit {
-  type = "healer";
+  public type = "healer";
   public healAmount!: number;
 
   public actions = [
@@ -21,10 +21,13 @@ export abstract class Healer extends Unit {
   }
 
   public heal(units: Unit[], target?: Unit): void {
-    console.log("heal");
     if (!target) {
       return;
     }
     target.takeHeal(this.healAmount);
+  }
+
+  public getAvailableTargets(units: Unit[]): string[] {
+    return units.filter(({ team }) => team === this.team).map(({ id }) => id);
   }
 }

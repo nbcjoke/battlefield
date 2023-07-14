@@ -3,11 +3,13 @@ import { FunctionComponent } from "react";
 import { Unit } from "../../../../models/unit";
 
 import styles from "./style.module.css";
+import paralyze from "../../../../assets/gif/paralyze.gif";
 
 interface UnitCardProps {
   unit: Unit;
   isHovering: string;
   currentId: string;
+  availableIds: string[];
   selectTarget: (target: Unit) => void;
 }
 
@@ -15,6 +17,7 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
   unit,
   isHovering,
   currentId,
+  availableIds,
   selectTarget,
 }) => {
   const onCardClick = () => {
@@ -31,6 +34,10 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
         isHovering === unit.id || currentId === unit.id
           ? { boxShadow: "0px 5px 19px 6px rgba(171, 174, 176, 0.29)" }
           : unit.status === "dead"
+          ? { pointerEvents: "none" }
+          : availableIds.includes(unit.id)
+          ? { border: "1px solid green" }
+          : unit.status === "paralyzed"
           ? { pointerEvents: "none" }
           : {}
       }
@@ -51,6 +58,15 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
       >
         DEAD
       </div>
+      {unit.status === "paralyzed" ? (
+        <img
+          className={styles.paralyzeUnit}
+          src={paralyze}
+          alt="paralyzed unit"
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 };

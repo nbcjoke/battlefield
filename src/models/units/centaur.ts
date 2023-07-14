@@ -3,8 +3,8 @@ import { Melee } from "../melee";
 import centaur from "../../assets/images/centaur.jpg";
 
 export class Centaur extends Melee {
-  constructor(team: string) {
-    super(team);
+  constructor(team: string, row: number, column: number) {
+    super(team, row, column);
     this.name = "Centaur";
     this.health = 150;
     this.initiative = 50;

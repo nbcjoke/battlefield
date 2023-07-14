@@ -1,7 +1,7 @@
 import { Unit, ActionTypes, Action } from "./unit";
 
 export abstract class Paralyzer extends Unit {
-  type = "paralyzer";
+  public type = "paralyzer";
 
   public actions = [
     { label: "Paralyze", action: ActionTypes.paralyze, isTargetRequired: true },
@@ -11,9 +11,6 @@ export abstract class Paralyzer extends Unit {
   public performAction(action: Action, units: Unit[], target?: Unit): void {
     switch (action.action) {
       case ActionTypes.paralyze:
-        if (!target) {
-          return;
-        }
         this.paralyze(target);
         break;
       case ActionTypes.defend:
@@ -22,7 +19,14 @@ export abstract class Paralyzer extends Unit {
     }
   }
 
-  public paralyze(target: Unit): void {
+  public paralyze(target?: Unit): void {
+    if (!target) {
+      return;
+    }
     target.paralyzeUnit();
+  }
+
+  public getAvailableTargets(units: Unit[]): string[] {
+    return units.filter(({ team }) => team !== this.team).map(({ id }) => id);
   }
 }

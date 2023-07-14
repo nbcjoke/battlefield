@@ -27,4 +27,11 @@ export abstract class Melee extends Unit {
   public attack(target: Unit): void {
     target.takeDamage(this.damage);
   }
+
+  public getAvailableTargets(units: Unit[]): string[] {
+    let team = units.filter(({ team }) => team === this.team);
+    let opponents = units.filter((unit) => unit.team !== this.team);
+    console.log(this.position);
+    return units.filter(({ team }) => team !== this.team).map(({ id }) => id);
+  }
 }

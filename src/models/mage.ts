@@ -1,7 +1,7 @@
 import { Unit, ActionTypes, Action } from "./unit";
 
 export abstract class Mage extends Unit {
-  type = "mage";
+  public type = "mage";
   public damage!: number;
 
   public actions = [
@@ -21,12 +21,14 @@ export abstract class Mage extends Unit {
   }
 
   public attack(units: Unit[]): void {
-    console.log("atack", units);
     units
       .filter(({ team }) => team !== this.team)
       .forEach((unit) => {
-        console.log("unit");
         unit.takeDamage(this.damage);
       });
+  }
+
+  public getAvailableTargets(units: Unit[]): string[] {
+    return [];
   }
 }

@@ -11,11 +11,12 @@ export const Battlefield = () => {
   const [units, setUnits] = useState<Unit[]>([]);
   const [redTeamUnits, setRedTeamUnits] = useState<Unit[][]>([]);
   const [blueTeamUnits, setBlueTeamUnits] = useState<Unit[][]>([]);
-  const [currentTeam, setCurrentTeam] = useState<string>("red");
+  const [currentRound, setCurrentRound] = useState<number>(1);
   const [isHovering, setIsHovering] = useState<string>("");
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [currentId, setCurrentId] = useState<string>("");
   const [currentAction, setCurrentAction] = useState<Action | undefined>();
+  const [availableIds, setAvailableIds] = useState<string[]>([]);
 
   useEffect(() => {
     const redTeamUnits = getUnits("red");
@@ -33,9 +34,9 @@ export const Battlefield = () => {
     const result = [];
     for (let i = 0; i < 2; i++) {
       const row = [];
-      for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
         const randomIndex = Math.floor(Math.random() * heroes.length);
-        row.push(new heroes[randomIndex](team));
+        row.push(new heroes[randomIndex](team, i, j));
       }
       result.push(row);
     }
@@ -58,17 +59,25 @@ export const Battlefield = () => {
   };
 
   const onAction = (action: Action) => {
+    const unit = units[currentIndex];
     if (action.isTargetRequired) {
       setCurrentAction(action);
-      // receive available targets id => setAvailableTargets(ids);
+      setAvailableTargets();
       return;
     }
 
-    const unit = units[currentIndex];
+    // const unit = units[currentIndex];
 
     unit.performAction(action, units);
 
     finishAction();
+  };
+
+  const setAvailableTargets = (): void => {
+    const unit = units[currentIndex];
+    const ids = unit.getAvailableTargets(units);
+    console.log(ids);
+    setAvailableIds(ids);
   };
 
   const selectTarget = (target: Unit) => {
@@ -76,21 +85,26 @@ export const Battlefield = () => {
       return;
     }
     const unit = units[currentIndex];
-
-    unit.performAction(currentAction, units, target);
-    finishAction();
-    setCurrentAction(undefined);
+    if (availableIds.includes(target.id)) {
+      unit.performAction(currentAction, units, target);
+      finishAction();
+      setCurrentAction(undefined);
+      setAvailableIds([]);
+    }
   };
 
   const finishAction = () => {
     let index = 0;
     if (currentIndex === units.length - 1) {
-      console.log("finish round");
+      setCurrentRound(currentRound + 1);
       const sorted = getSortedUnits([...redTeamUnits, ...blueTeamUnits]);
       index = getNextIndex(sorted, 0);
       setCurrentIndex(index);
       setCurrentId(sorted[index].id);
       setUnits(sorted);
+      console.log(sorted);
+      units.forEach((unit) => unit.resetState());
+      alert(`Round ${currentRound} finished`);
       return;
     }
     index = getNextIndex(units, currentIndex + 1);
@@ -100,7 +114,6 @@ export const Battlefield = () => {
 
   const getNextIndex = (units: Unit[], index: number): number => {
     let unit = units[index];
-
     while (unit.status !== Status.alive) {
       index++;
       unit = units[index];
@@ -116,7 +129,7 @@ export const Battlefield = () => {
             <p style={{ backgroundColor: "red" }} className={styles.teamColor}>
               RED
             </p>
-            <div>
+            <div className={styles.row}>
               {redTeamUnits.map((units, index) => {
                 return (
                   <UnitRow
@@ -125,6 +138,7 @@ export const Battlefield = () => {
                     isHovering={isHovering}
                     selectTarget={selectTarget}
                     currentId={currentId}
+                    availableIds={availableIds}
                   />
                 );
               })}
@@ -135,7 +149,7 @@ export const Battlefield = () => {
             <p style={{ backgroundColor: "blue" }} className={styles.teamColor}>
               BLUE
             </p>
-            <div>
+            <div className={styles.row}>
               {blueTeamUnits.map((units, index) => {
                 return (
                   <UnitRow
@@ -144,6 +158,7 @@ export const Battlefield = () => {
                     isHovering={isHovering}
                     selectTarget={selectTarget}
                     currentId={currentId}
+                    availableIds={availableIds}
                   />
                 );
               })}
@@ -152,7 +167,7 @@ export const Battlefield = () => {
           <RoundInfo
             units={units}
             currentIndex={currentIndex}
-            currentTeam={currentTeam}
+            currentRound={currentRound}
             currentAction={currentAction}
             setIsHovering={setIsHovering}
             onAction={onAction}

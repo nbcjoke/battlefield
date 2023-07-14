@@ -7,7 +7,7 @@ import styles from "./style.module.css";
 interface RoundInfoProps {
   units: Unit[];
   currentIndex: number;
-  currentTeam: string;
+  currentRound: number;
   currentAction?: Action;
   setIsHovering: (id: string) => void;
   onAction: (action: Action) => void;
@@ -16,8 +16,8 @@ interface RoundInfoProps {
 export const RoundInfo: FunctionComponent<RoundInfoProps> = ({
   units,
   currentIndex,
-  currentTeam,
   currentAction,
+  currentRound,
   setIsHovering,
   onAction,
 }) => {
@@ -60,6 +60,7 @@ export const RoundInfo: FunctionComponent<RoundInfoProps> = ({
       >
         {units[currentIndex]?.team} team turn
       </div>
+      <div className={styles.currentRound}>Round: {currentRound}</div>
       <div className={styles.buttonsContainer}>
         {units[currentIndex]?.actions?.map((action) => {
           return (

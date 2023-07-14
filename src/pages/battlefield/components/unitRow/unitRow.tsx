@@ -10,6 +10,7 @@ interface UnitRowProps {
   isHovering: string;
   currentId: string;
   selectTarget: (target: Unit) => void;
+  availableIds: string[];
 }
 
 export const UnitRow: FunctionComponent<UnitRowProps> = ({
@@ -17,6 +18,7 @@ export const UnitRow: FunctionComponent<UnitRowProps> = ({
   isHovering,
   currentId,
   selectTarget,
+  availableIds,
 }) => {
   return (
     <div className={styles.rowContainer}>
@@ -28,6 +30,7 @@ export const UnitRow: FunctionComponent<UnitRowProps> = ({
             isHovering={isHovering}
             selectTarget={selectTarget}
             currentId={currentId}
+            availableIds={availableIds}
           />
         );
       })}

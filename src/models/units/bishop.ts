@@ -9,8 +9,8 @@ export class Bishop extends Healer {
     { label: "Defend", action: ActionTypes.defend },
   ];
 
-  constructor(team: string) {
-    super(team);
+  constructor(team: string, row: number, column: number) {
+    super(team, row, column);
     this.name = "Bishop";
     this.health = 130;
     this.initiative = 20;

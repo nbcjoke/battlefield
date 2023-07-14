@@ -1,7 +1,7 @@
 import { Unit, ActionTypes, Action } from "./unit";
 
 export abstract class Range extends Unit {
-  type = "range";
+  public type = "range";
   public damage!: number;
 
   public actions = [
@@ -25,5 +25,9 @@ export abstract class Range extends Unit {
 
   public attack(target: Unit): void {
     target.takeDamage(this.damage);
+  }
+
+  public getAvailableTargets(units: Unit[]): string[] {
+    return units.filter(({ team }) => team !== this.team).map(({ id }) => id);
   }
 }
