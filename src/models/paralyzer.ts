@@ -8,7 +8,7 @@ export abstract class Paralyzer extends Unit {
     { label: "Defend", action: ActionTypes.defend },
   ];
 
-  public performAction(action: Action, units: Unit[], target?: Unit): void {
+  public performAction(action: Action, _: Unit[], target?: Unit): void {
     switch (action.action) {
       case ActionTypes.paralyze:
         this.paralyze(target);

@@ -20,7 +20,7 @@ export abstract class Healer extends Unit {
     }
   }
 
-  public heal(units: Unit[], target?: Unit): void {
+  public heal(_: Unit[], target?: Unit): void {
     if (!target) {
       return;
     }

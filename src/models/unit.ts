@@ -55,7 +55,7 @@ export abstract class Unit {
 
   public abstract performAction(
     action: Action,
-    units: Unit[],
+    units?: Unit[],
     target?: Unit
   ): void;
 
