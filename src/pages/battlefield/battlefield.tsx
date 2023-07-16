@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { heroes } from "../../constants/heroes";
-import { Action, ActionTypes, Status, Unit } from "../../models/unit";
+import { Action, Status, Unit } from "../../models/unit";
 import { UnitRow } from "./components/unitRow/unitRow";
 
 import styles from "./style.module.css";
@@ -17,6 +17,7 @@ export const Battlefield = () => {
   const [currentId, setCurrentId] = useState<string>("");
   const [currentAction, setCurrentAction] = useState<Action | undefined>();
   const [availableIds, setAvailableIds] = useState<string[]>([]);
+  const [isGameEnded, setIsGameEnded] = useState<boolean>(false);
 
   useEffect(() => {
     const redTeamUnits = getUnits("red");
@@ -24,7 +25,6 @@ export const Battlefield = () => {
     setRedTeamUnits(redTeamUnits.reverse());
     setBlueTeamUnits(blueTeamUnits);
     const sorted = getSortedUnits([...redTeamUnits, ...blueTeamUnits]);
-    console.log(sorted);
     setUnits(sorted);
     setCurrentId(sorted[currentIndex].id);
   }, []);
@@ -65,8 +65,6 @@ export const Battlefield = () => {
       return;
     }
 
-    // const unit = units[currentIndex];
-
     unit.performAction(action, units);
 
     finishAction();
@@ -75,7 +73,6 @@ export const Battlefield = () => {
   const setAvailableTargets = (): void => {
     const unit = units[currentIndex];
     const ids = unit.getAvailableTargets(units);
-    console.log(ids);
     setAvailableIds(ids);
   };
 
@@ -92,28 +89,69 @@ export const Battlefield = () => {
     }
   };
 
+  const checkGameState = (units: Unit[]) => {
+    const aliveRedTeam = units.filter(
+      (unit) => unit.team === "red" && unit.status !== "dead"
+    );
+    if (!aliveRedTeam.length) {
+      alert("Blue team win");
+      return true;
+    }
+
+    const aliveBlueTeam = units.filter(
+      (unit) => unit.team === "blue" && unit.status !== "dead"
+    );
+    if (!aliveBlueTeam.length) {
+      alert("Red team win");
+      return true;
+    }
+
+    if (
+      units.every(
+        (unit) =>
+          ["healer", "paralyzer"].includes(unit.type) && unit.status !== "dead"
+      )
+    ) {
+      alert("Draw");
+      return true;
+    }
+    return false;
+  };
+
   const finishAction = () => {
+    const isEnded = checkGameState(units);
+    if (isEnded) {
+      setIsGameEnded(true);
+      return;
+    }
     let index = 0;
     if (currentIndex === units.length - 1) {
-      setCurrentRound(currentRound + 1);
-      const sorted = getSortedUnits([...redTeamUnits, ...blueTeamUnits]);
-      index = getNextIndex(sorted, 0);
-      setCurrentIndex(index);
-      setCurrentId(sorted[index].id);
-      setUnits(sorted);
-      console.log(sorted);
-      units.forEach((unit) => unit.resetState());
-      alert(`Round ${currentRound} finished`);
+      finishRound();
       return;
     }
     index = getNextIndex(units, currentIndex + 1);
+    if (index >= units.length) {
+      finishRound();
+      return;
+    }
     setCurrentIndex(index);
     setCurrentId(units[index].id);
   };
 
+  const finishRound = () => {
+    setCurrentRound(currentRound + 1);
+    const sorted = getSortedUnits([...redTeamUnits, ...blueTeamUnits]);
+    const index = getNextIndex(sorted, 0);
+    setCurrentIndex(index);
+    setCurrentId(sorted[index].id);
+    setUnits(sorted);
+    units.forEach((unit) => unit.resetState());
+    alert(`Round ${currentRound} finished`);
+  };
+
   const getNextIndex = (units: Unit[], index: number): number => {
     let unit = units[index];
-    while (unit.status !== Status.alive) {
+    while (unit && unit.status !== Status.alive) {
       index++;
       unit = units[index];
     }
@@ -135,9 +173,9 @@ export const Battlefield = () => {
                     key={index}
                     units={units}
                     isHovering={isHovering}
-                    selectTarget={selectTarget}
                     currentId={currentId}
                     availableIds={availableIds}
+                    selectTarget={selectTarget}
                   />
                 );
               })}
@@ -155,9 +193,9 @@ export const Battlefield = () => {
                     key={index}
                     units={units}
                     isHovering={isHovering}
-                    selectTarget={selectTarget}
                     currentId={currentId}
                     availableIds={availableIds}
+                    selectTarget={selectTarget}
                   />
                 );
               })}
@@ -167,7 +205,7 @@ export const Battlefield = () => {
             units={units}
             currentIndex={currentIndex}
             currentRound={currentRound}
-            currentAction={currentAction}
+            isGameEnded={isGameEnded}
             setIsHovering={setIsHovering}
             onAction={onAction}
           />

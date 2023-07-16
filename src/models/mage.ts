@@ -29,6 +29,6 @@ export abstract class Mage extends Unit {
   }
 
   public getAvailableTargets(units: Unit[]): string[] {
-    return [];
+    return units.filter(({ team }) => team !== this.team).map(({ id }) => id);
   }
 }

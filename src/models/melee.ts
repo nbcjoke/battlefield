@@ -10,7 +10,6 @@ export abstract class Melee extends Unit {
   ];
 
   public performAction(action: Action, units: Unit[], target?: Unit): void {
-    console.log(target);
     switch (action.action) {
       case ActionTypes.attack:
         if (!target) {
@@ -64,7 +63,6 @@ export abstract class Melee extends Unit {
     const filteredUnits = availableUnits.filter((unit) => {
       return [column - 1, column, column + 1].includes(unit.position.column);
     });
-    console.log(filteredUnits);
 
     if (!filteredUnits.length) {
       return availableUnits.map(({ id }) => id);

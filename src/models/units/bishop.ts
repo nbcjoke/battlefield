@@ -19,7 +19,6 @@ export class Bishop extends Healer {
   }
 
   public heal(units: Unit[]): void {
-    console.log("heal");
     units
       .filter(({ team }) => team === this.team)
       .forEach((unit) => {

@@ -3,7 +3,6 @@ import { FunctionComponent } from "react";
 import { Unit } from "../../../../models/unit";
 
 import paralyze from "../../../../assets/gif/paralyze.gif";
-import fire from "../../../../assets/gif/fire.gif";
 import styles from "./style.module.css";
 
 interface UnitCardProps {
@@ -23,11 +22,8 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
 }) => {
   const onCardClick = () => {
     selectTarget(unit);
-    // if(true) {
-    //   return;
-    // }
   };
-  // console.log(unit.isHealing);
+
   return (
     <div
       className={styles.unitCardContainer}
@@ -62,10 +58,6 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
       </div>
       {unit.status === "paralyzed" ? (
         <img className={styles.paralyzeUnit} src={paralyze} alt="paralyzed" />
-      ) : unit.isAttacking ? (
-        <img src={fire} alt="fired" className={styles.heatedUnit} />
-      ) : unit.isHealing ? (
-        <img src={fire} alt="healed" className={styles.heatedUnit} />
       ) : (
         ""
       )}
