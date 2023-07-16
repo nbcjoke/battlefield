@@ -29,6 +29,9 @@ export const RoundInfo: FunctionComponent<RoundInfoProps> = ({
     setIsHovering("");
   };
 
+  const currentAvailableTargets =
+    units[currentIndex]?.getAvailableTargets?.(units);
+
   return (
     <div className={styles.roundInfoContainer}>
       <div className={styles.unitsContainer}>
@@ -63,12 +66,18 @@ export const RoundInfo: FunctionComponent<RoundInfoProps> = ({
       <div className={styles.currentRound}>Round: {currentRound}</div>
       <div className={styles.buttonsContainer}>
         {units[currentIndex]?.actions?.map((action) => {
-          return (
+          return action.action === "attack" &&
+            !currentAvailableTargets.length ? (
+            ""
+          ) : (
             <button
               key={action.label}
               className={styles.actionButton}
               onClick={() => onAction(action)}
-              disabled={!!currentAction}
+              disabled={
+                !!currentAction ||
+                (action.action === "attack" && !currentAvailableTargets.length)
+              }
             >
               {action.label}
             </button>

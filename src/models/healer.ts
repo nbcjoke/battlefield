@@ -28,6 +28,10 @@ export abstract class Healer extends Unit {
   }
 
   public getAvailableTargets(units: Unit[]): string[] {
-    return units.filter(({ team }) => team === this.team).map(({ id }) => id);
+    return units
+      .filter(
+        (unit) => unit.team === this.team && unit.currentHealth !== unit.health
+      )
+      .map(({ id }) => id);
   }
 }

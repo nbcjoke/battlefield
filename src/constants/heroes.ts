@@ -11,11 +11,11 @@ import { Sirena } from "../models/units/sirena";
 export const heroes = [
   Sceleton,
   Centaur,
-  Bandit,
-  ElfArcher,
-  SceletonMage,
-  ArchiMage,
-  Monk,
-  Bishop,
-  Sirena,
+  // Bandit,
+  // ElfArcher,
+  // SceletonMage,
+  // ArchiMage,
+  // Monk,
+  // Bishop,
+  // Sirena,
 ];

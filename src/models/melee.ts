@@ -29,9 +29,47 @@ export abstract class Melee extends Unit {
   }
 
   public getAvailableTargets(units: Unit[]): string[] {
-    let team = units.filter(({ team }) => team === this.team);
-    let opponents = units.filter((unit) => unit.team !== this.team);
-    console.log(this.position);
-    return units.filter(({ team }) => team !== this.team).map(({ id }) => id);
+    const { row, column } = this.position;
+
+    if (row > 0) {
+      const before = units.some(
+        (unit) =>
+          unit.position.row === row - 1 &&
+          unit.team === this.team &&
+          unit.status !== "dead"
+      );
+      if (before) {
+        return [];
+      }
+    }
+
+    let search = true;
+    let rowToAttack = 0;
+    let availableUnits: Unit[] = [];
+
+    while (search) {
+      availableUnits = units.filter(
+        (unit) =>
+          unit.team !== this.team &&
+          unit.status !== "dead" &&
+          unit.position.row === rowToAttack
+      );
+      if (availableUnits.length) {
+        search = false;
+      } else {
+        rowToAttack += 1;
+      }
+    }
+
+    const filteredUnits = availableUnits.filter((unit) => {
+      return [column - 1, column, column + 1].includes(unit.position.column);
+    });
+    console.log(filteredUnits);
+
+    if (!filteredUnits.length) {
+      return availableUnits.map(({ id }) => id);
+    }
+
+    return filteredUnits.map(({ id }) => id);
   }
 }

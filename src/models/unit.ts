@@ -1,4 +1,5 @@
 import { uniqueId } from "lodash";
+import { act } from "react-dom/test-utils";
 
 export enum ActionTypes {
   defend = "defend",
@@ -45,6 +46,8 @@ export abstract class Unit {
   public isDefending = false;
   public type!: string;
   public position!: { row: number; column: number };
+  public isAttacking = false;
+  public isHealing = false;
 
   constructor(public team: string, row: number, column: number) {
     this.id = uniqueId();
@@ -67,6 +70,7 @@ export abstract class Unit {
       this._currentHealth = 0;
       this.status = Status.dead;
     }
+    this.resetAction();
   }
 
   public takeHeal(heal: number): void {
@@ -77,10 +81,18 @@ export abstract class Unit {
     if (this._currentHealth > this._health) {
       this._currentHealth = this._health;
     }
+    this.resetAction();
   }
 
   public paralyzeUnit(): void {
     this.status = Status.paralyzed;
+  }
+
+  public resetAction(): void {
+    this.isAttacking = true;
+    setTimeout(() => {
+      this.isAttacking = false;
+    }, 2000);
   }
 
   public defend() {

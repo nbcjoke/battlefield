@@ -21,9 +21,8 @@ export const Battlefield = () => {
   useEffect(() => {
     const redTeamUnits = getUnits("red");
     const blueTeamUnits = getUnits("blue");
-    setRedTeamUnits(redTeamUnits);
+    setRedTeamUnits(redTeamUnits.reverse());
     setBlueTeamUnits(blueTeamUnits);
-
     const sorted = getSortedUnits([...redTeamUnits, ...blueTeamUnits]);
     console.log(sorted);
     setUnits(sorted);
