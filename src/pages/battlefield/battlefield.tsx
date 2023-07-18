@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
 import { heroes } from "../../constants/heroes";
-import { Action, Status, Unit } from "../../models/unit";
 import { UnitRow } from "./components/unitRow/unitRow";
+import { RoundInfo } from "./components/roundInfo/roundInfo";
+import { Action, ActionTypes, Status, Unit } from "../../models/unit";
 
 import styles from "./style.module.css";
-import { RoundInfo } from "./components/roundInfo/roundInfo";
 
 export const Battlefield = () => {
   const [units, setUnits] = useState<Unit[]>([]);
@@ -18,6 +18,9 @@ export const Battlefield = () => {
   const [currentAction, setCurrentAction] = useState<Action | undefined>();
   const [availableIds, setAvailableIds] = useState<string[]>([]);
   const [isGameEnded, setIsGameEnded] = useState<boolean>(false);
+  const [gameResult, setGameResult] = useState<string>("");
+  const [isOpenLog, setIsOpenLog] = useState<boolean>(false);
+  const [logInformation, setLogInformation] = useState<string[]>([]);
 
   useEffect(() => {
     const redTeamUnits = getUnits("red");
@@ -67,7 +70,7 @@ export const Battlefield = () => {
 
     unit.performAction(action, units);
 
-    finishAction();
+    finishAction(action);
   };
 
   const setAvailableTargets = (): void => {
@@ -83,9 +86,8 @@ export const Battlefield = () => {
     const unit = units[currentIndex];
     if (availableIds.includes(target.id)) {
       unit.performAction(currentAction, units, target);
-      finishAction();
+      finishAction(currentAction, target);
       setCurrentAction(undefined);
-      setAvailableIds([]);
     }
   };
 
@@ -94,7 +96,7 @@ export const Battlefield = () => {
       (unit) => unit.team === "red" && unit.status !== "dead"
     );
     if (!aliveRedTeam.length) {
-      alert("Blue team win");
+      setGameResult("Blue team win");
       return true;
     }
 
@@ -102,7 +104,7 @@ export const Battlefield = () => {
       (unit) => unit.team === "blue" && unit.status !== "dead"
     );
     if (!aliveBlueTeam.length) {
-      alert("Red team win");
+      setGameResult("Red team win");
       return true;
     }
 
@@ -112,18 +114,19 @@ export const Battlefield = () => {
           ["healer", "paralyzer"].includes(unit.type) && unit.status !== "dead"
       )
     ) {
-      alert("Draw");
+      setGameResult("Draw");
       return true;
     }
     return false;
   };
 
-  const finishAction = () => {
+  const finishAction = (action: Action, target?: Unit) => {
     const isEnded = checkGameState(units);
     if (isEnded) {
       setIsGameEnded(true);
       return;
     }
+
     let index = 0;
     if (currentIndex === units.length - 1) {
       finishRound();
@@ -136,6 +139,31 @@ export const Battlefield = () => {
     }
     setCurrentIndex(index);
     setCurrentId(units[index].id);
+    setAvailableIds([]);
+
+    const result = getLogMessage(
+      units[currentIndex],
+      action.action,
+      target?.name
+    );
+    setLogInformation([...logInformation, result]);
+  };
+
+  const getLogMessage = (
+    unit: Unit,
+    action: ActionTypes,
+    targetName?: string
+  ) => {
+    let message: string = action;
+    if (
+      !targetName &&
+      [ActionTypes.attack, ActionTypes.heal].includes(action)
+    ) {
+      message = `${action} all`;
+    }
+    return `${unit.name} ${message}${
+      targetName ? ` ${targetName}` : ""
+    } in round ${currentRound}`;
   };
 
   const finishRound = () => {
@@ -158,59 +186,82 @@ export const Battlefield = () => {
     return index;
   };
 
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   return (
     <>
-      <div className={styles.battlefieldContainer}>
-        <div className={styles.teamsContainer}>
-          <div className={styles.infoContainer}>
-            <p style={{ backgroundColor: "red" }} className={styles.teamColor}>
-              RED
-            </p>
-            <div className={styles.row}>
-              {redTeamUnits.map((units, index) => {
-                return (
-                  <UnitRow
-                    key={index}
-                    units={units}
-                    isHovering={isHovering}
-                    currentId={currentId}
-                    availableIds={availableIds}
-                    selectTarget={selectTarget}
-                  />
-                );
-              })}
-            </div>
-          </div>
-          <div className={styles.separator}>VS</div>
-          <div className={styles.infoContainer}>
-            <p style={{ backgroundColor: "blue" }} className={styles.teamColor}>
-              BLUE
-            </p>
-            <div className={styles.row}>
-              {blueTeamUnits.map((units, index) => {
-                return (
-                  <UnitRow
-                    key={index}
-                    units={units}
-                    isHovering={isHovering}
-                    currentId={currentId}
-                    availableIds={availableIds}
-                    selectTarget={selectTarget}
-                  />
-                );
-              })}
-            </div>
-          </div>
-          <RoundInfo
-            units={units}
-            currentIndex={currentIndex}
-            currentRound={currentRound}
-            isGameEnded={isGameEnded}
-            setIsHovering={setIsHovering}
-            onAction={onAction}
-          />
+      {isGameEnded ? (
+        <div className={styles.gameEnded}>
+          <p className={styles.result}>{gameResult}</p>
+          <button onClick={refreshPage} className={styles.actionButton}>
+            Next game
+          </button>
         </div>
-      </div>
+      ) : (
+        <div className={styles.battlefieldContainer}>
+          <div className={styles.teamsContainer}>
+            <div className={styles.infoContainer}>
+              <p
+                style={{ backgroundColor: "red" }}
+                className={styles.teamColor}
+              >
+                RED
+              </p>
+              <div className={styles.row}>
+                {redTeamUnits.map((units, index) => {
+                  return (
+                    <UnitRow
+                      key={index}
+                      units={units}
+                      isHovering={isHovering}
+                      currentId={currentId}
+                      availableIds={availableIds}
+                      selectTarget={selectTarget}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+            <div className={styles.separator}>VS</div>
+            <div className={styles.infoContainer}>
+              <p
+                style={{ backgroundColor: "blue" }}
+                className={styles.teamColor}
+              >
+                BLUE
+              </p>
+              <div className={styles.row}>
+                {blueTeamUnits.map((units, index) => {
+                  return (
+                    <UnitRow
+                      key={index}
+                      units={units}
+                      isHovering={isHovering}
+                      currentId={currentId}
+                      availableIds={availableIds}
+                      selectTarget={selectTarget}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+            <RoundInfo
+              units={units}
+              currentIndex={currentIndex}
+              currentRound={currentRound}
+              isGameEnded={isGameEnded}
+              currentId={currentId}
+              isOpenLog={isOpenLog}
+              logInformation={logInformation}
+              setIsHovering={setIsHovering}
+              onAction={onAction}
+              setIsOpenLog={setIsOpenLog}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };

@@ -27,12 +27,27 @@
   box-shadow: 0px 5px 19px 6px rgba(171, 174, 176, 0.29);
 }
 
-.deadUnit {
+.health {
+  position: absolute;
+  top: 34px;
+  left: 20px;
+  height: 100px;
+  width: 150px;
+  z-index: 100;
+}
+
+.deadUnit,
+.paralyzeUnit,
+.damagedUnit,
+.selectedUnit {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+.deadUnit {
   background-color: rgba(85, 0, 0, 0.9);
   justify-content: center;
   align-items: center;
@@ -41,24 +56,21 @@
 }
 
 .paralyzeUnit {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   width: 192px;
   height: 165px;
   z-index: -1;
 }
 
-.heatedUnit {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+.damagedUnit {
   width: 192px;
   height: 165px;
   opacity: 0.7;
   z-index: 1;
+}
+
+.selectedUnit {
+  left: -16px;
+  top: -14px;
+  width: 211px;
+  height: 181px;
 }

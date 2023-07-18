@@ -1,8 +1,10 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 
 import { Unit } from "../../../../models/unit";
 
 import paralyze from "../../../../assets/gif/paralyze.gif";
+import fire from "../../../../assets/gif/fire.gif";
+import selected from "../../../../assets/gif/selected.gif";
 import styles from "./style.module.css";
 
 interface UnitCardProps {
@@ -10,7 +12,9 @@ interface UnitCardProps {
   isHovering: string;
   currentId: string;
   availableIds: string[];
+  // damagedIds: string[];
   selectTarget: (target: Unit) => void;
+  // setDamagedIds: (ids: string[]) => void;
 }
 
 export const UnitCard: FunctionComponent<UnitCardProps> = ({
@@ -20,6 +24,12 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
   availableIds,
   selectTarget,
 }) => {
+  const [currentHealth, setCurrentHealth] = useState<number>(0);
+
+  useEffect(() => {
+    setCurrentHealth(unit.currentHealth);
+  }, [unit, selectTarget]);
+
   const onCardClick = () => {
     selectTarget(unit);
   };
@@ -29,8 +39,8 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
       className={styles.unitCardContainer}
       key={unit.id}
       style={
-        isHovering === unit.id || currentId === unit.id
-          ? { boxShadow: "0px 5px 19px 6px rgba(171, 174, 176, 0.29)" }
+        isHovering === unit.id
+          ? { boxShadow: "0px 5px 19px 6px rgba(171, 174, 176, 0.4)" }
           : unit.status === "dead"
           ? { pointerEvents: "none" }
           : availableIds.includes(unit.id)
@@ -48,6 +58,21 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
       <p className={styles.unitHealth}>
         {unit.currentHealth}/{unit.health}
       </p>
+      {currentHealth <= unit.health / 4 ? (
+        <div
+          className={styles.health}
+          style={{
+            backgroundColor: "rgba(85, 0, 0, 0.7)",
+          }}
+        ></div>
+      ) : currentHealth <= unit.health / 2 ? (
+        <div
+          className={styles.health}
+          style={{ backgroundColor: "rgba(85, 0, 0, 0.5)" }}
+        ></div>
+      ) : (
+        ""
+      )}
       <div
         className={styles.deadUnit}
         style={
@@ -56,6 +81,11 @@ export const UnitCard: FunctionComponent<UnitCardProps> = ({
       >
         DEAD
       </div>
+      {currentId === unit.id ? (
+        <img className={styles.selectedUnit} src={selected} />
+      ) : (
+        ""
+      )}
       {unit.status === "paralyzed" ? (
         <img className={styles.paralyzeUnit} src={paralyze} alt="paralyzed" />
       ) : (
